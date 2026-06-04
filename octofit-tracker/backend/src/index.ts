@@ -1,11 +1,16 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import workoutsRouter from './routes/workouts';
+import genericRouter from './routes/generic';
 
 const app = express();
 const port = Number(process.env.PORT ?? 8000);
-const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/octofit-tracker';
+const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/octofit_db';
 
 app.use(express.json());
+
+app.use('/api/workouts', workoutsRouter);
+app.use('/api', genericRouter);
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
