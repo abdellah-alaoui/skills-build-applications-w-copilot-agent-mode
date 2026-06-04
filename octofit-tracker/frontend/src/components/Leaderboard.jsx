@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
-import { fetchApi } from '../api';
 
 function Leaderboard() {
   const [entries, setEntries] = useState([]);
   const [error, setError] = useState(null);
+  const apiHost = import.meta.env.VITE_CODESPACE_NAME
+    ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev`
+    : 'http://localhost:8000';
+  const leaderboardUrl = `${apiHost}/api/leaderboard`;
 
   useEffect(() => {
-    fetchApi('leaderboard')
-      .then((data) => {
+    fetch(leaderboardUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Network error: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        const data = Array.isArray(payload) ? payload : payload.results || payload.data || payload.items || [];
         if (data.length > 0 && Array.isArray(data[0].entries)) {
           setEntries(data[0].entries);
         } else {
@@ -15,7 +23,7 @@ function Leaderboard() {
         }
       })
       .catch((err) => setError(err.message));
-  }, []);
+  }, [leaderboardUrl]);
 
   return (
     <section>

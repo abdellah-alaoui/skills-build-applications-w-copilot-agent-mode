@@ -1,15 +1,26 @@
 import { useEffect, useState } from 'react';
-import { fetchApi } from '../api';
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([]);
   const [error, setError] = useState(null);
+  const apiHost = import.meta.env.VITE_CODESPACE_NAME
+    ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev`
+    : 'http://localhost:8000';
+  const workoutsUrl = `${apiHost}/api/workouts`;
 
   useEffect(() => {
-    fetchApi('workouts')
-      .then(setWorkouts)
+    fetch(workoutsUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Network error: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        const results =
+          Array.isArray(payload) ? payload : payload.results || payload.data || payload.items || [];
+        setWorkouts(results);
+      })
       .catch((err) => setError(err.message));
-  }, []);
+  }, [workoutsUrl]);
 
   return (
     <section>
