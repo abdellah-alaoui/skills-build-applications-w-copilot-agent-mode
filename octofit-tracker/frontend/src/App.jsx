@@ -4,7 +4,6 @@ import Teams from './components/Teams';
 import Activities from './components/Activities';
 import Workouts from './components/Workouts';
 import Leaderboard from './components/Leaderboard';
-import { API_BASE_URL } from './api';
 
 function App() {
   return (
@@ -14,7 +13,7 @@ function App() {
         <p className="text-muted">
           Frontend configured with React Router and Codespaces-aware API URLs.
           <br />
-          API base: <code>{API_BASE_URL}</code>
+          The app uses the Codespaces base URL when <code>VITE_CODESPACE_NAME</code> is defined.
         </p>
       </header>
 
